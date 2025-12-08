@@ -11,7 +11,7 @@
 
 ## 🎯 Overview
 
-This pipeline integrates state-of-the-art bioinformatics tools (2023–2025) to process raw Illumina sequencing reads into:
+This pipeline integrates current bioinformatics tools (2023–2025) to process raw Illumina sequencing reads into:
 
 - **Metagenome-Assembled Genomes (MAGs)** with high quality metrics
 - **Taxonomic classification** using GTDB-Tk (Genome Taxonomy Database)

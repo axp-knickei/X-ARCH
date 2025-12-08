@@ -7,6 +7,53 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.1.0] - 2025-12-08
+
+### Added
+
+- **Improved Reproducibility:**
+  - Introduced `environment.yml` for precise version pinning of all Conda/Pip dependencies, replacing unpinned `setup_environment.sh`.
+  - Ensured `metabat2` (previously missing) is installed as per `README.md` specification.
+- **Enhanced Code Structure:**
+  - Extracted inline Python heredocs from `archaea_pipeline.sh` into dedicated, modular Python scripts (`scripts/extract_qc_stats.py`, `scripts/filter_hq_bins.py`, `scripts/filter_contigs.py`).
+  - Parameterized Python helper scripts for reusability and testability.
+  - Organized helper scripts into a new `scripts/` directory.
+- **Centralized Configuration Management:**
+  - Replaced `config.sh` with a structured `config.yaml` for all pipeline parameters.
+  - Implemented `scripts/read_config.py` to parse `config.yaml` and make variables accessible in `archaea_pipeline.sh`.
+  - Updated `archaea_pipeline.sh` to load configuration from `config.yaml` and allow command-line overrides.
+  - Dynamic display of default values in `--help` message.
+- **Comprehensive Testing Infrastructure:**
+  - Added unit tests (`tests/test_python_scripts.py`) for Python helper scripts using `pytest`.
+  - Developed a mock-based integration test (`tests/run_integration_test.sh`) to verify `archaea_pipeline.sh` flow without heavy tool execution.
+  - Created `tests/mocks/` directory with dummy executables for bioinformatics tools.
+  - Provided `TESTING.md` documentation for running tests.
+- **Containerization Support:**
+  - Created `Dockerfile` for building a reproducible Docker image based on the Conda environment.
+  - Provided `config_docker.yaml` with container-optimized paths.
+  - Documented Docker build and run instructions in `DOCKER_README.md`.
+- **Modern Workflow Management (Snakemake):**
+  - Implemented a `Snakefile` to orchestrate the entire pipeline, defining rules for each stage.
+  - Integrated `config.yaml` with Snakemake for parameter management.
+  - Provided `SNAKEMAKE_README.md` for guidance on running the pipeline with Snakemake.
+
+### Changed
+
+- `setup_environment.sh`: Modified to use `environment.yml` for Conda environment creation/update.
+- `archaea_pipeline.sh`:
+  - Updated to load parameters from `config.yaml` and support command-line overrides.
+  - Replaced inline Python code with calls to external scripts.
+  - Updated NCBI submission template to use `config.yaml` values.
+- `README.md`: Added sections for Docker and Snakemake usage.
+- `environment.yml`: Added `pyyaml`, `pytest`, and `snakemake` dependencies.
+
+### Removed
+
+- `config.sh`: Superseded by `config.yaml`.
+- Inline Python code blocks from `archaea_pipeline.sh`.
+
+---
+
 ## [1.0.0] - 2025-12-07
 
 ### Initial Release
@@ -100,23 +147,6 @@ First release of the Archaea Genomics Pipeline for extreme environment metagenom
   - KEGG pathway reconstruction for extremophiles
   - Horizontal gene transfer detection
 
-- [ ] Workflow managers
-  - Nextflow version
-  - Snakemake version
-  - Singularity container support
-  - Docker image on Docker Hub
-
-- [ ] HPC integration
-  - SLURM job submission templates
-  - PBS/Torque compatibility
-  - Job dependency management
-
-- [ ] Quality-of-life improvements
-  - Progress bars during long steps
-  - Email notifications on completion
-  - Checkpoint/resume functionality
-  - Parallel multi-sample analysis
-
 #### Community Feedback
 
 - [ ] Test on macOS (M1/M2 chips)
@@ -172,3 +202,4 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on how to contribute impro
 - **Tool developers** – MetaSPAdes, GTDB-Tk, DRAM, antiSMASH, and all integrated tools
 - **Community feedback** – Users who report issues and suggest improvements
 - **Funding** – [Your institution/funding agency]
+

@@ -1,0 +1,3 @@
+#!/bin/bash
+echo "[MOCK] metabat2 running..."
+exit 0

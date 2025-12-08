@@ -1,0 +1,5 @@
+#!/bin/bash
+echo "[MOCK] bowtie2 running..."
+# Just output something to stdout that looks like SAM
+echo "@HD VN:1.0 SO:unsorted"
+exit 0

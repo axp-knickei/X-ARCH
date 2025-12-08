@@ -1,0 +1,12 @@
+#!/bin/bash
+echo "[MOCK] iqtree2 running..."
+# --prefix PREFIX
+PREFIX=""
+while [[ $# -gt 0 ]]; do
+    if [[ "$1" == "--prefix" ]]; then
+        PREFIX="$2"
+    fi
+    shift
+done
+touch "${PREFIX}.treefile"
+exit 0

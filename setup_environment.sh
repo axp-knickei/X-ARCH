@@ -2,7 +2,7 @@
 
 ################################################################################
 # SETUP SCRIPT FOR ARCHAEA GENOMICS PIPELINE
-# Installs all required bioinformatics tools and databases
+# Installs all required bioinformatics tools and databases using environment.yml
 # Runtime: ~30-60 minutes (depending on internet speed)
 ################################################################################
 
@@ -37,57 +37,19 @@ fi
 
 echo -e "${GREEN}✓ Using $PKG_MANAGER as package manager${NC}"
 
-# Add bioconda channels if not already added
-echo -e "${BLUE}Adding bioconda channels...${NC}"
-$PKG_MANAGER config --add channels defaults
-$PKG_MANAGER config --add channels bioconda
-$PKG_MANAGER config --add channels conda-forge
-
-# Create conda environment
-echo -e "${BLUE}Creating archaea_env environment...${NC}"
-$PKG_MANAGER create -y --name archaea_env python=3.10
+# Create/Update conda environment
+echo -e "${BLUE}Creating/Updating conda environment from environment.yml...${NC}"
+if [ -d "$($PKG_MANAGER info --base)/envs/archaea_env" ]; then
+    echo -e "${YELLOW}Environment 'archaea_env' already exists. Updating...${NC}"
+    $PKG_MANAGER env update -f environment.yml --prune
+else
+    $PKG_MANAGER env create -f environment.yml
+fi
 
 # Activate environment
 echo -e "${BLUE}Activating environment...${NC}"
 eval "$(conda shell.bash hook)"
 conda activate archaea_env
-
-# Install core bioinformatics tools
-echo -e "${BLUE}Installing core bioinformatics tools...${NC}"
-echo -e "${YELLOW}This may take 10-20 minutes...${NC}"
-
-$PKG_MANAGER install -y \
-    fastp \
-    spades \
-    bowtie2 \
-    samtools \
-    checkm2 \
-    gtdbtk \
-    antismash \
-    iqtree \
-    quast \
-    das_tool
-
-# Install specialized tools (may not be in bioconda yet)
-echo -e "${BLUE}Installing specialized binning tools...${NC}"
-
-# SemiBin2
-echo -e "${YELLOW}Installing SemiBin2...${NC}"
-pip install SemiBin
-
-# DRAM
-echo -e "${YELLOW}Installing DRAM...${NC}"
-pip install DRAM
-
-# Additional utilities
-echo -e "${BLUE}Installing additional utilities...${NC}"
-$PKG_MANAGER install -y \
-    pandas \
-    numpy \
-    scipy \
-    biopython \
-    pysam \
-    bedtools
 
 # Download antiSMASH databases
 echo -e "${BLUE}Downloading antiSMASH databases...${NC}"
@@ -97,6 +59,7 @@ download-antismash-databases --verbose
 # Download DRAM databases
 echo -e "${BLUE}Setting up DRAM databases...${NC}"
 echo -e "${YELLOW}This downloads ~15 GB. May take 20-30 minutes...${NC}"
+# Upgrade pip in the env just in case, though handled by conda usually
 python -m pip install --upgrade pip setuptools
 DRAM.py setup_databases --verbose
 
@@ -130,6 +93,8 @@ verify_tool "gtdbtk"
 verify_tool "antismash"
 verify_tool "iqtree2"
 verify_tool "quast.py"
+verify_tool "metabat2"
+verify_tool "DAS_Tool" 
 
 echo -e "${BLUE}========================================${NC}"
 echo -e "${GREEN}SETUP COMPLETE!${NC}"

@@ -5,6 +5,8 @@
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 ![Bash](https://img.shields.io/badge/bash-5.1+-green.svg)
 ![Python](https://img.shields.io/badge/python-3.8+-blue.svg)
+![Snakemake](https://img.shields.io/badge/snakemake-7.x+-green.svg)
+![Docker](https://img.shields.io/badge/docker-enabled-blue.svg)
 ![GitHub](https://img.shields.io/badge/github-repo-blue?logo=github)
 
 ---
@@ -76,20 +78,111 @@ chmod +x archaea_pipeline.sh setup_environment.sh
 
 This creates a Conda environment with all required tools and downloads necessary databases (GTDB, DRAM, antiSMASH — ~50 GB total).
 
-### 4. Run the Pipeline
+### 4. Configure the Pipeline
+
+The pipeline uses a `config.yaml` file for all parameters. You can edit this file directly or override specific parameters via command-line arguments.
+
+**Default Configuration (`config.yaml`):**
+
+```yaml
+# General pipeline settings
+pipeline:
+  threads: 32
+  max_memory_gb: 500 # in GB
+  sample_name: "archaea_sample"
+  work_dir: "./archaea_analysis"
+  data_dir: "./input_data"
+# ... other settings for databases, tools, sample metadata, submitter info
+```
+For more details, see `config.yaml`.
+
+---
+
+## 🚀 Available Workflows
+
+You can run the pipeline using the original bash script, Snakemake, or via Docker.
+
+### Option A: Run with Bash Script (`archaea_pipeline.sh`)
+
+This is the traditional way to run the pipeline. Ensure your `archaea_env` conda environment is activated.
 
 ```bash
 # Activate the environment
 mamba activate archaea_env
 
-# Run with your data
+# Run with your data (parameters override config.yaml)
 ./archaea_pipeline.sh \
     -1 /path/to/sample_R1.fastq.gz \
     -2 /path/to/sample_R2.fastq.gz \
     -s MyArchaeaSample \
     -t 64 \
-    -m 500
+    -m 1000 \
+    -w /path/to/my_analysis_output
 ```
+For more details on bash script usage, refer to `./archaea_pipeline.sh --help`.
+
+### Option B: Run with Snakemake
+
+Snakemake provides robust workflow management, automatic parallelization, and resume capabilities.
+
+1.  **Configure:** Ensure `config.yaml` is updated with your input read paths and desired parameters.
+    ```yaml
+    reads:
+      r1: "/path/to/sample_R1.fq.gz"
+      r2: "/path/to/sample_R2.fq.gz"
+    # ... other pipeline settings
+    ```
+2.  **Run:**
+    ```bash
+    # Activate environment
+    mamba activate archaea_env
+
+    # Run pipeline locally with 32 cores, using the conda environment
+    snakemake --cores 32 --use-conda
+    ```
+    For advanced Snakemake usage (cluster execution, dry-runs), see `SNAKEMAKE_README.md`.
+
+### Option C: Run with Docker
+
+Containerization ensures maximum reproducibility and portability.
+
+1.  **Build the Image:**
+    ```bash
+    docker build -t x-arch:v1.0 .
+    ```
+2.  **Run the Pipeline:**
+    ```bash
+    docker run --rm -it \
+        -v /path/to/your/data:/data \
+        -v /path/to/your/output:/output \
+        -v /path/to/local/databases:/databases \
+        x-arch:v1.0 \
+        -1 /data/sample_R1.fq.gz \
+        -2 /data/sample_R2.fq.gz \
+        -s MySample \
+        -t 16 \
+        -m 64
+    ```
+    Note: Paths passed to `-1`, `-2`, etc., should be relative to the container's mounted volumes (e.g., `/data/sample_R1.fq.gz`).
+    For more details on Docker usage, see `DOCKER_README.md`.
+
+---
+
+## 🧪 Testing
+
+The pipeline includes unit tests for helper scripts and a mocked integration test for the main workflow.
+
+```bash
+# Activate environment
+mamba activate archaea_env
+
+# Run unit tests
+pytest tests/test_python_scripts.py
+
+# Run mocked integration test
+./tests/run_integration_test.sh
+```
+For more detailed testing instructions and troubleshooting, see `TESTING.md`.
 
 ---
 

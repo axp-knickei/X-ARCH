@@ -1,0 +1,14 @@
+#!/bin/bash
+echo "[MOCK] checkm2 running..."
+# --output-directory OUT_DIR
+OUTPUT_DIR=""
+while [[ $# -gt 0 ]]; do
+    if [[ "$1" == "--output-directory" ]]; then
+        OUTPUT_DIR="$2"
+    fi
+    shift
+done
+mkdir -p "$OUTPUT_DIR"
+# Create dummy report
+echo -e "Name\tCompleteness\tContamination\nbin.1\t99.0\t0.5" > "$OUTPUT_DIR/quality_report.tsv"
+exit 0

@@ -26,16 +26,28 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
-# Default values
-THREADS=${THREADS:-32}
-MAX_MEMORY=${MAX_MEMORY:-500}  # in GB
-SAMPLE_NAME="archaea_sample"
-WORK_DIR="$(pwd)/archaea_analysis"
+# Load configuration from config.yaml
+log "Loading configuration from config.yaml..."
+# Ensure python and pyyaml are in PATH, preferably via activated conda env
+if ! command -v python3 &> /dev/null; then
+    error "python3 is not installed. Please ensure your conda environment is activated."
+fi
+eval "$(python3 scripts/read_config.py config.yaml)"
+
+# Set actual variables, prioritizing config.yaml values
+THREADS=${PIPELINE_THREADS:-32}
+MAX_MEMORY=${PIPELINE_MAX_MEMORY_GB:-500} # Rename to MAX_MEMORY to match existing usage
+SAMPLE_NAME=${PIPELINE_SAMPLE_NAME:-"archaea_sample"}
+WORK_DIR=${PIPELINE_WORK_DIR:-"$(pwd)/archaea_analysis"}
+
+# Derived values
 LOG_DIR="${WORK_DIR}/logs"
 TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
 LOG_FILE="${LOG_DIR}/pipeline_${TIMESTAMP}.log"
 
-# Tool versions (for reproducibility)
+# Tool versions (for logging/display only - actual versions are from environment.yml)
+# These are kept for display purposes in logs/reports, but the pipeline relies on the versions
+# installed in the active conda environment as defined by environment.yml
 FASTP_VERSION="0.23.4"
 SPADES_VERSION="3.15.5"
 CHECKM2_VERSION="1.0.1"
@@ -93,15 +105,19 @@ ${BLUE}========================================${NC}
 
 Usage: $0 [OPTIONS]
 
+Configuration:
+    Parameters can be set via 'config.yaml' or overridden by command-line arguments.
+    Defaults are shown below.
+
 Required OPTIONS:
     -1, --read1     PATH    Raw forward reads (FASTQ/FASTQ.GZ)
     -2, --read2     PATH    Raw reverse reads (FASTQ/FASTQ.GZ)
-    -s, --sample    NAME    Sample identifier (default: archaea_sample)
 
 Optional OPTIONS:
-    -t, --threads   INT     Number of threads (default: 32)
-    -m, --memory    INT     Max memory in GB (default: 500)
-    -w, --workdir   PATH    Working directory (default: ./archaea_analysis)
+    -s, --sample    NAME    Sample identifier (default: ${SAMPLE_NAME})
+    -t, --threads   INT     Number of threads (default: ${THREADS})
+    -m, --memory    INT     Max memory in GB (default: ${MAX_MEMORY})
+    -w, --workdir   PATH    Working directory (default: ${WORK_DIR})
     -h, --help              Display this help message
 
 Examples:
@@ -150,22 +166,7 @@ stage_qc() {
     
     # Extract QC statistics
     log "Extracting quality statistics..."
-    python3 << 'PYTHON_QC'
-import json
-import sys
-
-try:
-    with open('archaea_analysis/results/qc/archaea_sample_fastp.json') as f:
-        data = json.load(f)
-    
-    print("\n=== QC SUMMARY ===")
-    print(f"Reads before filtering: {data['summary']['before_filtering']['total_reads']}")
-    print(f"Reads after filtering: {data['summary']['after_filtering']['total_reads']}")
-    print(f"Q30 rate (after): {data['summary']['after_filtering']['q30_rate']:.2%}")
-    print(f"GC content: {data['summary']['after_filtering']['gc_content']:.2%}")
-except Exception as e:
-    print(f"Warning: Could not parse QC JSON: {e}")
-PYTHON_QC
+    python3 scripts/extract_qc_stats.py "${WORK_DIR}/results/qc/${SAMPLE_NAME}_fastp.json"
 }
 
 ################################################################################
@@ -542,48 +543,48 @@ PYTHON_FILTER_CONTIGS
     # Generate submission metadata template
     log "Generating NCBI submission metadata template..."
     
-    cat > "${SUBMISSION_DIR}/SUBMISSION_METADATA_TEMPLATE.txt" << 'EOF'
+    cat > "${SUBMISSION_DIR}/SUBMISSION_METADATA_TEMPLATE.txt" << EOF
 # NCBI BioProject and BioSample Metadata Template
 # Please fill out and use for submission at: https://submit.ncbi.nlm.nih.gov/
 
 ## BioProject Information
-bioproject_title: "Genomic characterization of novel Archaea from [ENVIRONMENT TYPE]"
-bioproject_description: "Metagenomic analysis and recovery of metagenome-assembled genomes (MAGs) from [ENVIRONMENT DESCRIPTION]"
+bioproject_title: "Genomic characterization of novel Archaea from ${SAMPLE_METADATA_ISOLATION_SOURCE}"
+bioproject_description: "Metagenomic analysis and recovery of metagenome-assembled genomes (MAGs) from ${SAMPLE_METADATA_ISOLATION_SOURCE} environment"
 bioproject_type: "Metagenome"
 
 ## BioSample Information (MIMS - Minimum Information about a Metagenome Sequence)
-sample_title: "[SAMPLE_ID]"
-isolation_source: "[e.g., hydrothermal vent, acid mine drainage, salt lake, subsurface, etc.]"
-geographic_location: "[COUNTRY: REGION]"
-collection_date: "[YYYY-MM-DD]"
-latitude: "[decimal degrees, N/S]"
-longitude: "[decimal degrees, E/W]"
-depth: "[meters, if applicable]"
-environment_biome: "[e.g., environmental, aquatic, subsurface, extreme]"
-environment_feature: "[e.g., hydrothermal vent chimney, acidic mine, evaporation pond]"
-environment_material: "[e.g., rock, sediment, fluid, salt, biofilm]"
-ph: "[pH value if known]"
-temperature: "[temperature in Celsius if known]"
+sample_title: "${SAMPLE_NAME}" # Uses pipeline's sample name
+isolation_source: "${SAMPLE_METADATA_ISOLATION_SOURCE}"
+geographic_location: "${SAMPLE_METADATA_GEOGRAPHIC_LOCATION}"
+collection_date: "${SAMPLE_METADATA_COLLECTION_DATE}"
+latitude: "${SAMPLE_METADATA_LATITUDE}"
+longitude: "${SAMPLE_METADATA_LONGITUDE}"
+depth: "${SAMPLE_METADATA_DEPTH_METERS}" # meters, if applicable
+environment_biome: "environmental" # Hardcoded for now, could be configurable
+environment_feature: "${SAMPLE_METADATA_ISOLATION_SOURCE}" # Re-using isolation_source
+environment_material: "not applicable" # Hardcoded for now
+ph: "${SAMPLE_METADATA_PH_VALUE}"
+temperature: "${SAMPLE_METADATA_TEMPERATURE_CELSIUS}" # Celsius
 
 ## Sequencing Information
 sequencing_platform: "Illumina"
-sequencing_kit: "[e.g., HiSeq 4000, MiSeq, etc.]"
+sequencing_kit: "not specified" # Could be configurable
 library_strategy: "WGS (Whole Genome Shotgun)"
-assembly_method: "MetaSPAdes v3.15"
+assembly_method: "MetaSPAdes v${SPADES_VERSION}" # Using actual version
 binning_methods: "SemiBin2, MetaBAT2, DAS Tool"
-quality_assessment: "CheckM2"
+quality_assessment: "CheckM2 v${CHECKM2_VERSION}" # Using actual version
 
 ## Quality Metrics
-genome_completeness: "[percentage]"
-genome_contamination: "[percentage]"
-n50_scaffold: "[value]"
-number_scaffolds: "[value]"
-total_length_bp: "[value]"
+genome_completeness: "[percentage]" # To be filled manually
+genome_contamination: "[percentage]" # To be filled manually
+n50_scaffold: "[value]" # To be filled manually
+number_scaffolds: "[value]" # To be filled manually
+total_length_bp: "[value]" # To be filled manually
 
 ## Contact Information
-submitter_name: "[YOUR NAME]"
-submitter_email: "[EMAIL]"
-submitter_institution: "[INSTITUTION]"
+submitter_name: "${SUBMITTER_NAME}"
+submitter_email: "${SUBMITTER_EMAIL}"
+submitter_institution: "${SUBMITTER_INSTITUTION}"
 
 EOF
     

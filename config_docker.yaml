@@ -1,0 +1,38 @@
+# General pipeline settings
+pipeline:
+  threads: 32
+  max_memory_gb: 500 # in GB
+  sample_name: "archaea_sample"
+  work_dir: "/output" # Default for container
+  data_dir: "/data"   # Default for container
+
+# Sample metadata for NCBI submission (from config.sh)
+sample_metadata:
+  isolation_source: "unknown" # Default to 'unknown' if not set
+  geographic_location: "UNKNOWN: UNKNOWN"
+  latitude: "0.0000"
+  longitude: "0.0000"
+  collection_date: "YYYY-MM-DD" # Placeholder
+  temperature_celsius: "N/A"
+  ph_value: "N/A"
+  depth_meters: "N/A"
+
+# Database paths (mapped volumes in container)
+databases:
+  gtdbtk_data_path: "/databases/gtdbtk"
+  dram_db_path: "/databases/dram"
+  checkm2_db: "/databases/checkm2"
+
+# Tool-specific options (from config.sh)
+tools:
+  spades_mode: "meta" # Options: 'meta', 'metaviral', 'ionhq'
+  dram_structural_annotation: false # True/False
+  antismash_strictness: "relaxed" # Options: 'strict', 'relaxed'
+  iqtree_bootstrap_replicates: 1000
+
+# Submitter information for NCBI (from config.sh)
+submitter:
+  name: "Your Name"
+  email: "your.email@institution.edu"
+  institution: "Your Institution"
+  biosafety_level: 1 # 1, 2, 3, 4

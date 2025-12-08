@@ -1,0 +1,31 @@
+name: archaea_env
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - python=3.10
+  - fastp=0.23.4
+  - spades=3.15.5
+  - bowtie2=2.5.1
+  - samtools=1.17
+  - bedtools=2.31.0
+  - checkm2=1.0.1
+  - gtdbtk=2.3.2
+  - antismash=7.0.0
+  - iqtree=2.3.0
+  - quast=5.2.0
+  - das_tool=1.1.6
+  - metabat2=2.15
+  - pandas
+  - numpy
+  - scipy
+  - biopython
+  - pysam
+  - pip
+  - pyyaml
+  - pytest
+  - snakemake
+  - pip:
+    - SemiBin>=1.4.0
+    - DRAM>=1.3

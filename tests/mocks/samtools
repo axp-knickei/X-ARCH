@@ -1,0 +1,17 @@
+#!/bin/bash
+echo "[MOCK] samtools running..."
+if [[ "$1" == "view" ]]; then
+    cat # Pass through
+elif [[ "$1" == "sort" ]]; then
+    # Create the output bam
+    # -o output_file
+    while [[ $# -gt 0 ]]; do
+        if [[ "$1" == "-o" ]]; then
+            touch "$2"
+        fi
+        shift
+    done
+elif [[ "$1" == "index" ]]; then
+    touch "$2.bai"
+fi
+exit 0

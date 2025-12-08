@@ -1,0 +1,8 @@
+#!/bin/bash
+echo "[MOCK] fastp running..."
+# Create output files
+touch "$3" # Clean R1 (based on pipeline usage: -o out1 -O out2)
+touch "$5" # Clean R2
+touch "$7" # HTML report
+touch "$9" # JSON report
+exit 0

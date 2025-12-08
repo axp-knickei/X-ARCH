@@ -1,0 +1,4 @@
+#!/bin/bash
+echo "[MOCK] bowtie2-build running..."
+touch "$2.1.bt2"
+exit 0

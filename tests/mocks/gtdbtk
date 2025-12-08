@@ -1,0 +1,16 @@
+#!/bin/bash
+echo "[MOCK] gtdbtk running..."
+# --out_dir OUT_DIR
+OUTPUT_DIR=""
+while [[ $# -gt 0 ]]; do
+    if [[ "$1" == "--out_dir" ]]; then
+        OUTPUT_DIR="$2"
+    fi
+    shift
+done
+mkdir -p "$OUTPUT_DIR"
+touch "$OUTPUT_DIR/ar53.summary.tsv"
+# Need MSA for phylogeny stage
+mkdir -p "$OUTPUT_DIR/align"
+touch "$OUTPUT_DIR/align/gtdbtk.ar53.user_msa.fasta"
+exit 0

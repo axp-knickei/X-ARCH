@@ -1,0 +1,15 @@
+#!/bin/bash
+echo "[MOCK] SemiBin2 running..."
+# -o output_dir
+OUTPUT_DIR=""
+while [[ $# -gt 0 ]]; do
+    if [[ "$1" == "-o" ]]; then
+        OUTPUT_DIR="$2"
+    fi
+    shift
+done
+mkdir -p "$OUTPUT_DIR/output_bins"
+touch "$OUTPUT_DIR/output_bins/bin.1.fasta"
+echo ">bin1_contig1" > "$OUTPUT_DIR/output_bins/bin.1.fasta"
+echo "ATGC" >> "$OUTPUT_DIR/output_bins/bin.1.fasta"
+exit 0

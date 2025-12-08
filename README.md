@@ -325,7 +325,7 @@ This project is licensed under the **MIT License** – see the [LICENSE](LICENSE
 
 - **GitHub Issues:** [Report bugs or request features](https://github.com/YOUR_USERNAME/archaea-genomics-pipeline/issues)
 - **Discussions:** [Ask questions or share experiences](https://github.com/YOUR_USERNAME/archaea-genomics-pipeline/discussions)
-- **Email:** [alex.prima@tu-dortmund.de]
+- **Email:** alex.prima@tu-dortmund.de
 
 ---
 
@@ -352,4 +352,4 @@ This pipeline was developed with inspiration from:
 
 **Last Updated:** December 2025  
 **Maintained by:** Alex Prima ([Institution](https://institution.edu))  
-**Status:** ✅ Active & regularly updated
+**Status:** Active

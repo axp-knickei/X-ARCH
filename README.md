@@ -5,6 +5,7 @@
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 ![Bash](https://img.shields.io/badge/bash-5.1+-green.svg)
 ![Python](https://img.shields.io/badge/python-3.8+-blue.svg)
+![GitHub](https://img.shields.io/badge/github-repo-blue?logo=github)
 
 ---
 
@@ -187,7 +188,7 @@ archaea_analysis/
 
 ---
 
-## 📖 Usage Examples
+## Usage Examples
 
 ### **Example 1: Basic Usage**
 
@@ -220,7 +221,7 @@ mamba activate archaea_env
 
 ---
 
-## 🔗 Tool References & Links
+## Tool References & Links
 
 | Stage | Tool | Version | Reference | Link |
 | :--- | :--- | :--- | :--- | :--- |
@@ -238,16 +239,16 @@ mamba activate archaea_env
 
 ---
 
-## 🔬 Citation
+## Citation
 
 If you use this pipeline in your research, please cite:
 
 ```bibtex
 @software{archaea_pipeline_2025,
-  author = {Your Name},
-  title = {Archaea Genomics Pipeline: A comprehensive workflow for extreme environment metagenomics},
+  author = {Alex Prima},
+  title = {Archaea Genomics Pipeline: A workflow for extreme environment metagenomics},
   year = {2025},
-  url = {https://github.com/YOUR_USERNAME/archaea-genomics-pipeline},
+  url = {https://github.com/axp-knickei/X-ARCH},
   doi = {10.XXXX/zenodo.XXXXXXX}  % Optional: add Zenodo DOI if available
 }
 ```
@@ -324,7 +325,7 @@ This project is licensed under the **MIT License** – see the [LICENSE](LICENSE
 ## 🙋 Support & Questions
 
 - **GitHub Issues:** [Report bugs or request features](https://github.com/axp-knickei/X-ARCH/issues)
-- **Discussions:** [Ask questions or share experiences](https://github.com/axp-knickei/X-ARCH/discussions)
+- **Discussions:** [Not Available for now](https://github.com/axp-knickei/X-ARCH)
 - **Email:** alex.prima@tu-dortmund.de
 
 ---
@@ -351,5 +352,5 @@ This pipeline was developed with inspiration from:
 ---
 
 **Last Updated:** December 2025  
-**Maintained by:** Alex Prima ([Institution](https://institution.edu))  
+**Maintained by:** Alex Prima ([Universitas Brawijaya](https://www.ub.ac.id/))  
 **Status:** Active

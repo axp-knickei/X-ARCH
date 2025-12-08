@@ -62,7 +62,7 @@ source ~/miniconda3/bin/activate
 ### 2. Clone This Repository
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/archaea-genomics-pipeline.git
+git clone https://github.com/axp-knickei/X-ARCH.git
 cd archaea-genomics-pipeline
 chmod +x archaea_pipeline.sh setup_environment.sh
 ```
@@ -152,7 +152,7 @@ mamba activate archaea_env
 
 ---
 
-## 💾 Output Directory Structure
+## Output Directory Structure
 
 ```
 archaea_analysis/
@@ -303,7 +303,7 @@ reconstruction was conducted using IQ-TREE2 (v2.3+) with 1000 ultrafast bootstra
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 We welcome contributions! Please:
 
@@ -315,7 +315,7 @@ We welcome contributions! Please:
 
 ---
 
-## 📄 License
+## License
 
 This project is licensed under the **MIT License** – see the [LICENSE](LICENSE) file for details.
 
@@ -323,8 +323,8 @@ This project is licensed under the **MIT License** – see the [LICENSE](LICENSE
 
 ## 🙋 Support & Questions
 
-- **GitHub Issues:** [Report bugs or request features](https://github.com/YOUR_USERNAME/archaea-genomics-pipeline/issues)
-- **Discussions:** [Ask questions or share experiences](https://github.com/YOUR_USERNAME/archaea-genomics-pipeline/discussions)
+- **GitHub Issues:** [Report bugs or request features](https://github.com/axp-knickei/X-ARCH/issues)
+- **Discussions:** [Ask questions or share experiences](https://github.com/axp-knickei/X-ARCH/discussions)
 - **Email:** alex.prima@tu-dortmund.de
 
 ---

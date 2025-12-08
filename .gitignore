@@ -185,3 +185,6 @@ site/
 # Add your own large or sensitive data directories here:
 # /my_large_dataset
 # /sensitive_data
+
+.gemini/
+gha-creds-*.json

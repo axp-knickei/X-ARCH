@@ -418,7 +418,7 @@ This project is licensed under the **MIT License** – see the [LICENSE](LICENSE
 ## 🙋 Support & Questions
 
 - **GitHub Issues:** [Report bugs or request features](https://github.com/axp-knickei/X-ARCH/issues)
-- **Discussions:** [Not Available for now](https://github.com/axp-knickei/X-ARCH)
+- **Discussions:** [Start discussion here](https://github.com/axp-knickei/X-ARCH/discussions)
 - **Email:** alex.prima@tu-dortmund.de
 
 ---
